@@ -101,17 +101,13 @@ class Translation(Formatter):
                 files(f'text2qti.templates.{template}').joinpath(
                 'format_key_translation.json').read_text())
 
-    def format(self, formatting_template, **kwargs):
-        format_kwargs_translated = {k: self.translations.get(v, v)
-                                    for k, v in kwargs.items()}
-        return Formatter.format(self, formatting_template, **kwargs)
     def get_value(self, key, args, kwds):
         if isinstance(key, str):
             addkeys = self.translations.get('additional_keys', {})
             tag = object()
             val = kwds.get(key, addkeys.get(key, object()))
             if val == tag: raise KeyError(key)
-            return val
+            return self.translations.get(val, val)
         else:
             return Formatter.get_value(key, args, kwds)
 
