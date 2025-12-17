@@ -31,7 +31,7 @@ MANIFEST_END = '''\
 
 
 def imsmanifest(*,
-                template: str
+                template: str,
                 manifest_identifier: str,
                 assessment_identifier: str,
                 dependency_identifier: str,

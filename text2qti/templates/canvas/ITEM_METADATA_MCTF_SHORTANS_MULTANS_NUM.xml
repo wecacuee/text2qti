@@ -1,16 +1,8 @@
         <itemmetadata>
           <qtimetadata>
             <qtimetadatafield>
-              <fieldlabel>cc_profile</fieldlabel>
-              <fieldentry>{question_type}</fieldentry>
-            </qtimetadatafield>
-            <qtimetadatafield>
               <fieldlabel>question_type</fieldlabel>
               <fieldentry>{question_type}</fieldentry>
-            </qtimetadatafield>
-            <qtimetadatafield>
-              <fieldlabel>points_possible</fieldlabel>
-              <fieldentry>{points_possible}</fieldentry>
             </qtimetadatafield>
             <qtimetadatafield>
               <fieldlabel>cc_weighting</fieldlabel>

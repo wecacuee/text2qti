@@ -10,6 +10,7 @@
 
 from .quiz import Quiz, Question, GroupStart, GroupEnd, TextRegion
 from importlib.resources import files
+import json
 
 
 BEFORE_ITEMS = '''\
@@ -92,7 +93,7 @@ def ITEM_METADATA_MCTF_SHORTANS_MULTANS_NUM(template):
 
 
 class Translation:
-    def def __init__(self, template):
+    def __init__(self, template):
         self.template = template
         self.translations = json.loads(
                 files(f'text2qti.templates.{template}').joinpath(
@@ -101,11 +102,16 @@ class Translation:
     def format(self, formatting_template, **kwargs):
         format_kwargs_translated = {k: self.translations.get(v, v)
                                     for k, v in kwargs.items()}
+        format_kwargs_translated.extend(self.translations.additional_keys)
         return formatting_template.format(**kwargs)
 
 def ITEM_METADATA_ESSAY(template):
-    return ITEM_METADATA_MCTF_SHORTANS_MULTANS_NUM(
+    if template == 'canvas':
+        return ITEM_METADATA_MCTF_SHORTANS_MULTANS_NUM(
             template).replace('{original_answer_ids}', '')
+    elif template == 'brightspace':
+        return ITEM_METADATA_MCTF_SHORTANS_MULTANS_NUM(
+                template).replace('{qmd_computerscored}', 'No')
 
 def ITEM_METADATA_UPLOAD(template):
     return ITEM_METADATA_ESSAY(template)
