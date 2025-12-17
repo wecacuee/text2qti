@@ -94,6 +94,9 @@ def main():
         config['run_code_blocks'] = args.run_code_blocks
     if args.pandoc_mathml is not None:
         config['pandoc_mathml'] = args.pandoc_mathml
+    config['template'] = (args.template
+                          if args.template is not None else
+                          config['template'])
 
     file_path = pathlib.Path(args.file).expanduser()
     file_path_abs = file_path.absolute()

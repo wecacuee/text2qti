@@ -11,6 +11,7 @@
 from .quiz import Quiz, Question, GroupStart, GroupEnd, TextRegion
 from importlib.resources import files
 import json
+from string import Formatter
 
 
 BEFORE_ITEMS = '''\
@@ -92,8 +93,9 @@ def ITEM_METADATA_MCTF_SHORTANS_MULTANS_NUM(template):
             'ITEM_METADATA_MCTF_SHORTANS_MULTANS_NUM.xml').read_text()
 
 
-class Translation:
+class Translation(Formatter):
     def __init__(self, template):
+        super().__init__()
         self.template = template
         self.translations = json.loads(
                 files(f'text2qti.templates.{template}').joinpath(
@@ -102,8 +104,16 @@ class Translation:
     def format(self, formatting_template, **kwargs):
         format_kwargs_translated = {k: self.translations.get(v, v)
                                     for k, v in kwargs.items()}
-        format_kwargs_translated.extend(self.translations.additional_keys)
-        return formatting_template.format(**kwargs)
+        return Formatter.format(self, formatting_template, **kwargs)
+    def get_value(self, key, args, kwds):
+        if isinstance(key, str):
+            addkeys = self.translations.get('additional_keys', {})
+            tag = object()
+            val = kwds.get(key, addkeys.get(key, object()))
+            if val == tag: raise KeyError(key)
+            return val
+        else:
+            return Formatter.get_value(key, args, kwds)
 
 def ITEM_METADATA_ESSAY(template):
     if template == 'canvas':
