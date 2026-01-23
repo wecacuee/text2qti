@@ -16,7 +16,7 @@ from string import Formatter
 
 BEFORE_ITEMS = '''\
 <?xml version="1.0" encoding="UTF-8"?>
-<questestinterop xmlns="http://www.imsglobal.org/xsd/ims_qtiasiv1p2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/ims_qtiasiv1p2 http://www.imsglobal.org/xsd/ims_qtiasiv1p2p1.xsd">
+<questestinterop xmlns="http://www.imsglobal.org/xsd/ims_qtiasiv1p2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.imsglobal.org/xsd/ims_qtiasiv1p2 https://www.imsglobal.org/sites/default/files/xsd/ims_qtiasiv1p2p1.xsd">
   <assessment ident="{assessment_identifier}" title="{title}">
     <qtimetadata>
       <qtimetadatafield>
@@ -128,7 +128,7 @@ ITEM_PRESENTATION_MCTF = '''\
             <mattext texttype="text/html">{question_html_xml}</mattext>
           </material>
           <response_lid ident="response1" rcardinality="Single">
-            <render_choice>
+            <render_choice shuffle="Yes">
 {choices}
             </render_choice>
           </response_lid>
