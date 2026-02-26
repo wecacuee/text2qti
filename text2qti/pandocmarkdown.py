@@ -23,6 +23,9 @@ from .config import Config
 from .err import Text2qtiError
 from .version import __version__ as version
 from . import pymd_pandoc_attr
+from .postprocessor import CopyPreClassToCode
+
+
 
 class Image(object):
     pass
@@ -43,6 +46,7 @@ class Markdown(object):
         self.images = dict()
         self._cache = dict()
         self._cache['pandoc_mathml'] = dict()
+        self.postprocessors = [CopyPreClassToCode()]
 
     def finalize(self):
         pass
@@ -89,7 +93,9 @@ class Markdown(object):
                 startupinfo = None
             try:
                 proc = subprocess.run(['pandoc', '-f',
-                                       'markdown+tex_math_dollars+latex_macros', '-t', 'html', '--mathml'],
+                                       'markdown+tex_math_dollars+latex_macros+backtick_code_blocks',
+                                       '-t', 'html', '--mathml',
+                                       '--no-highlight'],
                                       input=input_template.format(latex), encoding='utf8',
                                       stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                                       startupinfo=startupinfo,
@@ -99,14 +105,16 @@ class Markdown(object):
             except subprocess.CalledProcessError as e:
                 raise Text2qtiError(f'Running Pandoc failed:\n{e}')
             mathml = proc.stdout.strip()
-            if mathml.startswith('<p>'):
-                mathml = mathml[len('<p>'):]
-            if mathml.endswith('</p>'):
-                mathml = mathml[:-len('</p>')]
+            mathml = self.postprocess(mathml)
             self._cache['pandoc_mathml'][latex] = {
                 'mathml': mathml,
                 'unused_count': 0,
             }
+        return mathml
+
+    def postprocess(self, mathml: str) -> str:
+        for processors in self.postprocessors:
+            mathml = processors.postprocess(mathml)
         return mathml
 
     def md_to_html_xml(self, markdown_string: str, strip_p_tags: bool=False) -> str:
